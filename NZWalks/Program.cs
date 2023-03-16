@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using NZWalks.Data;
+using NZWalks.Repository;
+using NZWalks.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +12,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+/*Doing the Dependency Injection for DataBase*/
 builder.Services.AddDbContext<ApplicationDb>(opt => { opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
+
+/*Doing the DI for Interface and of its Class*/
+builder.Services.AddScoped<IRegionsRepository, RegionRepository>();
+
+/*Doing the DI for the only class*/
+builder.Services.AddScoped<RegionService>();
+
+/*doing the DI for autoMapper and autoMapper reuired the scan of assembly*/
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
